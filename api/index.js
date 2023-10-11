@@ -1,9 +1,13 @@
 // Requiring modules
 const express = require('express');
 // require('dotenv').config()
+const app = express();
+const bodyParser = require ('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 var {MongoClient,Timestamp } = require('mongodb');
 var url = "mongodb+srv://Dhanush:SD18A2004@cluster0.2s94ek1.mongodb.net/?retryWrites=true&w=majority";
-const app = express();
+
 const mongoClient = new MongoClient(url);
 app.get('/', async function (req, res) {
 	const database = (await mongoClient).db("mini_project");
@@ -13,19 +17,22 @@ app.get('/', async function (req, res) {
 		db.close();
 		console.log(result);
 		return result
-		// console.log(result.name);
+	
 		
 	  })
 	 console.log(resul)
 });
 app.post('/post', async function (req, res) {
-	// let body=req.body;
+	// console.log(req);
+	// let reqq=JSON.parse(req);
+console.log(req.body)
 	try{
 		const database = (await mongoClient).db("mini_project");
 	const collection =await database.collection("EXLAW");
-	const results = await collection.insertOne(req.body);
+	const results = await collection.insertOne({Message:`${req.body.Message}`,});
     res.send(JSON.stringify(results));
     }catch(err){
+		console.log(err)
       res.send({statusCode: 500, body: err.toString()});
       }
 		});
