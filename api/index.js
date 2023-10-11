@@ -27,7 +27,7 @@ app.get('/', async function (req, res) {
 		
 	  })
 	 console.log(resul)
-	 res.send(resul);
+	 res.send(JSON.stringify(resul));
 });
 app.post('/post', async function (req, res) {
 	// console.log(req);
