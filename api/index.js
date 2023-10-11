@@ -4,6 +4,12 @@ const express = require('express');
 const app = express();
 const bodyParser = require ('body-parser');
 app.use(bodyParser.json());
+const cors = require("cors"); 
+var corsOptions = {
+	origin: '*',
+	optionsSuccessStatus: 200
+  };
+  app.use(cors(corsOptions));  
 app.use(bodyParser.urlencoded({ extended: false }));
 var {MongoClient,Timestamp } = require('mongodb');
 var url = "mongodb+srv://Dhanush:SD18A2004@cluster0.2s94ek1.mongodb.net/?retryWrites=true&w=majority";
