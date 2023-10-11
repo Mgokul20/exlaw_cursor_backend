@@ -21,6 +21,7 @@ app.get('/', async function (req, res) {
 		
 	  })
 	 console.log(resul)
+	 res.send(resul);
 });
 app.post('/post', async function (req, res) {
 	// console.log(req);
