@@ -19,18 +19,34 @@ document.getElementById("userInput").addEventListener("keyup", function (event) 
         getUserInput();
     }
 });
-
 eel.expose(addUserMsg);
 eel.expose(addAppMsg);
 
+async function postmaeeage(msg){
+    const response = await fetch(url, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+          "Content-Type": "application/json",
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(msg), // body data type must match "Content-Type" header
+      });
+}
 
 function addUserMsg(msg) {
+    
     element = document.getElementById("messages");
     element.innerHTML += '<div class="message from ready rtol">' + msg + '</div>';
     element.scrollTop = element.scrollHeight - element.clientHeight - 15;
     //add delay for animation to complete and then modify class to => "message from"
     index = element.childElementCount - 1;
     setTimeout(changeClass.bind(null, element, index, "message from"), 500);
+    postmaeeage(msg)
     // con.connect(function(err) {
     // con.query(`INSERT INTO exlaw(type,message) values (user,${msg})`, function (err, result) {
     //     if (err) throw err;

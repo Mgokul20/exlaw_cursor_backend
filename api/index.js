@@ -1,58 +1,49 @@
 // Requiring modules
 const express = require('express');
+// require('dotenv').config()
 const app = express();
-const mssql = require("mysql");
+const bodyParser = require ('body-parser');
+app.use(bodyParser.json());
+const cors = require("cors"); 
+var corsOptions = {
+	origin: '*',
+	optionsSuccessStatus: 200
+  };
+  app.use(cors(corsOptions));  
+app.use(bodyParser.urlencoded({ extended: false }));
+var {MongoClient,Timestamp } = require('mongodb');
+var url = "mongodb+srv://Dhanush:SD18A2004@cluster0.2s94ek1.mongodb.net/?retryWrites=true&w=majority";
 
-// Get request
-app.get('/', function (req, res) {
-
-	// Config your database credential
-	const config = {
-		user: 'root',
-		password: 'root',
-		server: 'localhost',
-		database: 'exlaw'
-	};
-	mssql.connect(config, function (err) {
-
-		// Create Request object to perform
-		// query operation
-		let request = new mssql.Request();
-
-		// Query to the database and get the records
-		request.query('select * from exlaw',
-			function (err, records) {
-
-				if (err) console.log(err)
-                console.log(records);
-				// Send records as a response
-				// to browser
-            	res.send(records);
-
-			});
-	});
-});
-	// Connect to your database
-//var request_exlaw=()=>{
+const mongoClient = new MongoClient(url);
+app.get('/', async function (req, res) {
+	const database = (await mongoClient).db("mini_project");
+	const collection =await database.collection("EXLAW");
+	 const resul = await collection.find({}).toArray( function(err, result) {
+		if (err) throw err;
+		db.close();
+		console.log(result);
+		return result
 	
-//};
-
-let server = app.listen(5000, function () {
-	console.log('Server is listening at port 5000...');
+		
+	  })
+	 console.log(resul)
+	 res.send(JSON.stringify(resul));
 });
+app.post('/post', async function (req, res) {
+	// console.log(req);
+	// let reqq=JSON.parse(req);
+console.log(req.body)
+	try{
+		const database = (await mongoClient).db("mini_project");
+	const collection =await database.collection("EXLAW");
+	const results = await collection.insertOne({Message:`${req.body.Message}`,});
+    res.send(JSON.stringify(results));
+    }catch(err){
+		console.log(err)
+      res.send({statusCode: 500, body: err.toString()});
+      }
+		});
 
-const { Client } = require("pg");
 
-const client = new Client(process.env.DATABASE_URL);
-
-(async () => {
-  await client.connect();
-  try {
-    const results = await client.query("SELECT NOW()");
-    console.log(results);
-  } catch (err) {
-    console.error("error executing query:", err);
-  } finally {
-    client.end();
-  }
-})();
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
